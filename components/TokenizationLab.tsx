@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Hash, Code, Info, ChevronRight, Zap, Terminal, Copy, List } from 'lucide-react';
 
@@ -191,7 +190,7 @@ const TokenizationLab: React.FC = () => {
                 ))}
               </div>
 
-              {hoveredIdx !== null ? (
+              {hoveredIdx !== null && tokens[hoveredIdx] ? (
                 <div className="p-4 bg-white/5 rounded-xl border border-white/10 animate-in fade-in slide-in-from-bottom-2">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[10px] font-bold text-slate-500 uppercase">Token 详情</span>

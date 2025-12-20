@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Hash, ArrowRight, Table, Layers, Network, Info, Crosshair, ZoomIn } from 'lucide-react';
 
@@ -102,7 +101,7 @@ const EmbeddingSim: React.FC = () => {
               高维向量片段 (Vector Fragment)
             </label>
             <div className="p-4 bg-slate-900/50 rounded-2xl border border-white/5 min-h-[140px] flex flex-col justify-center">
-              {hoveredIdx !== null ? (
+              {hoveredIdx !== null && tokens[hoveredIdx] ? (
                 <div className="animate-in fade-in slide-in-from-left-2 duration-300">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-sm font-bold text-blue-400">"{tokens[hoveredIdx].text}" 向量</span>

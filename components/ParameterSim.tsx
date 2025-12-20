@@ -33,7 +33,7 @@ const ParameterSim: React.FC = () => {
             <input 
               type="range" 
               min="1" 
-              max="400" 
+              max="1024" 
               step="1"
               value={params}
               onChange={(e) => setParams(Number(e.target.value))}
@@ -42,7 +42,7 @@ const ParameterSim: React.FC = () => {
             <div className="flex justify-between text-[10px] text-slate-500 font-mono">
               <span>NANO (1B)</span>
               <span>MEDIUM (70B)</span>
-              <span>ULTRA (400B)</span>
+              <span>GIANT (1024B)</span>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ const ParameterSim: React.FC = () => {
                 <span className="text-sm font-mono text-emerald-400 font-bold">{mem.fp16.toFixed(1)} GB</span>
               </div>
               <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, mem.fp16 / 4)}%` }} />
+                <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, mem.fp16 / 40)}%` }} />
               </div>
 
               <div className="flex items-center justify-between pt-2">
@@ -68,7 +68,7 @@ const ParameterSim: React.FC = () => {
                 <span className="text-sm font-mono text-blue-400 font-bold">{mem.int8.toFixed(1)} GB</span>
               </div>
               <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500" style={{ width: `${Math.min(100, mem.int8 / 4)}%` }} />
+                <div className="h-full bg-blue-500" style={{ width: `${Math.min(100, mem.int8 / 40)}%` }} />
               </div>
 
               <div className="flex items-center justify-between pt-2">
@@ -76,7 +76,7 @@ const ParameterSim: React.FC = () => {
                 <span className="text-sm font-mono text-purple-400 font-bold">{mem.int4.toFixed(1)} GB</span>
               </div>
               <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-purple-500" style={{ width: `${Math.min(100, mem.int4 / 4)}%` }} />
+                <div className="h-full bg-purple-500" style={{ width: `${Math.min(100, mem.int4 / 40)}%` }} />
               </div>
             </div>
           </div>
