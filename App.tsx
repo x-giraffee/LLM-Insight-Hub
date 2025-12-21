@@ -82,10 +82,10 @@ const App: React.FC = () => {
                         setActiveModuleId(module.id);
                         setIsSidebarOpen(false);
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all group
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border outline-none group
                         ${activeModuleId === module.id 
-                          ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/20 shadow-inner' 
-                          : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}`}
+                          ? 'bg-indigo-600/20 text-indigo-400 border-indigo-500/20 shadow-inner' 
+                          : 'text-slate-400 border-transparent hover:bg-white/5 hover:text-slate-200'}`}
                     >
                       <span className={`transition-colors ${activeModuleId === module.id ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
                         {module.icon}
