@@ -52,7 +52,7 @@ const TokenizationLab: React.FC = () => {
 
       // Match logic for CJK, Latin words, and spaces
       const regex = /[\u4e00-\u9fa5]{1,2}|[a-zA-Z]+|\s+|[^\w\s\u4e00-\u9fa5]/g;
-      const matches = part.match(regex) || [];
+      const matches: string[] = part.match(regex) || [];
       
       matches.forEach(m => {
         const text = m;

@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   ChevronRight, 
   Menu, 
@@ -7,15 +7,48 @@ import {
   Search, 
   Info,
   Github,
-  Monitor
+  Monitor,
+  Settings
 } from 'lucide-react';
 import { APP_MODULES } from './constants';
 import { Module, ModuleCategory } from './types';
+import MenuCustomizer from './components/MenuCustomizer';
 
 const App: React.FC = () => {
-  const [activeModuleId, setActiveModuleId] = useState<string>(APP_MODULES[0].id);
+  // Config State
+  const [moduleConfig, setModuleConfig] = useState({
+    ids: APP_MODULES.map(m => m.id),
+    groupByCategory: true
+  });
+  const [activeModuleId, setActiveModuleId] = useState<string>(''); // Init empty, set in effect
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Derived: Active Modules based on Config
+  const activeModules = useMemo(() => {
+    const moduleMap = new Map(APP_MODULES.map(m => [m.id, m]));
+    return moduleConfig.ids
+      .map(id => moduleMap.get(id))
+      .filter((m): m is Module => !!m);
+  }, [moduleConfig.ids]);
+
+  // Ensure activeModuleId is valid
+  useEffect(() => {
+    if (activeModules.length > 0) {
+      // If current active ID is not in the new list, switch to the first available one
+      if (!activeModules.find(m => m.id === activeModuleId)) {
+        setActiveModuleId(activeModules[0].id);
+      }
+    }
+  }, [activeModules, activeModuleId]);
+
+  // Initial load
+  useEffect(() => {
+    if (!activeModuleId && APP_MODULES.length > 0) {
+      setActiveModuleId(APP_MODULES[0].id);
+    }
+  }, []);
 
   const activeModule = useMemo(() => 
     APP_MODULES.find(m => m.id === activeModuleId) || APP_MODULES[0],
@@ -23,17 +56,32 @@ const App: React.FC = () => {
   );
 
   const filteredModules = useMemo(() => 
-    APP_MODULES.filter(m => 
+    activeModules.filter(m => 
       m.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       m.description.toLowerCase().includes(searchQuery.toLowerCase())
     ),
-    [searchQuery]
+    [searchQuery, activeModules]
   );
 
   const categories = Object.values(ModuleCategory);
 
+  const handleConfigSave = (ids: string[], groupByCategory: boolean) => {
+    setModuleConfig({ ids, groupByCategory });
+  };
+
   return (
     <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden">
+      {/* Menu Customizer Modal */}
+      {isCustomizerOpen && (
+        <MenuCustomizer 
+          allModules={APP_MODULES}
+          initialIds={moduleConfig.ids}
+          initialGroupBy={moduleConfig.groupByCategory}
+          onSave={handleConfigSave}
+          onClose={() => setIsCustomizerOpen(false)}
+        />
+      )}
+
       {/* Sidebar - Mobile Overlay */}
       <div className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)} />
@@ -44,14 +92,25 @@ const App: React.FC = () => {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         
         <div className="p-6 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <Monitor className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <Monitor className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="font-bold text-lg tracking-tight">LLM Insights</h1>
+                <p className="text-[10px] text-slate-400 font-medium tracking-[0.2em] uppercase">Architecture Hub</p>
+              </div>
             </div>
-            <div>
-              <h1 className="font-bold text-lg tracking-tight">LLM Insights</h1>
-              <p className="text-[10px] text-slate-400 font-medium tracking-[0.2em] uppercase">Architecture Hub</p>
-            </div>
+            
+            {/* Settings Button */}
+            <button 
+              onClick={() => setIsCustomizerOpen(true)}
+              className="p-2 hover:bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors"
+              title="自定义菜单"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
           </div>
 
           <div className="relative">
@@ -67,42 +126,76 @@ const App: React.FC = () => {
         </div>
 
         <nav className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-          {categories.map(category => {
-            const categoryModules = filteredModules.filter(m => m.category === category);
-            if (categoryModules.length === 0) return null;
+          {filteredModules.length === 0 && (
+            <div className="text-center text-slate-500 text-xs py-10">
+              未找到相关模块<br/>
+              (请检查搜索或菜单配置)
+            </div>
+          )}
 
-            return (
-              <div key={category} className="mb-6">
-                <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">{category}</h3>
-                <div className="space-y-1">
-                  {categoryModules.map(module => (
-                    <button
-                      key={module.id}
-                      onClick={() => {
-                        setActiveModuleId(module.id);
-                        setIsSidebarOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border outline-none group
-                        ${activeModuleId === module.id 
-                          ? 'bg-indigo-600/20 text-indigo-400 border-indigo-500/20 shadow-inner' 
-                          : 'text-slate-400 border-transparent hover:bg-white/5 hover:text-slate-200'}`}
-                    >
-                      <span className={`transition-colors ${activeModuleId === module.id ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
-                        {module.icon}
-                      </span>
-                      <span className="truncate">{module.title}</span>
-                      {activeModuleId === module.id && <ChevronRight className="ml-auto w-4 h-4" />}
-                    </button>
-                  ))}
+          {moduleConfig.groupByCategory ? (
+            categories.map(category => {
+              const categoryModules = filteredModules.filter(m => m.category === category);
+              if (categoryModules.length === 0) return null;
+
+              return (
+                <div key={category} className="mb-6 animate-in fade-in slide-in-from-left-4 duration-300">
+                  <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">{category}</h3>
+                  <div className="space-y-1">
+                    {categoryModules.map(module => (
+                      <button
+                        key={module.id}
+                        onClick={() => {
+                          setActiveModuleId(module.id);
+                          setIsSidebarOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border outline-none group
+                          ${activeModuleId === module.id 
+                            ? 'bg-indigo-600/20 text-indigo-400 border-indigo-500/20 shadow-inner' 
+                            : 'text-slate-400 border-transparent hover:bg-white/5 hover:text-slate-200'}`}
+                      >
+                        <span className={`transition-colors ${activeModuleId === module.id ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
+                          {module.icon}
+                        </span>
+                        <span className="truncate">{module.title}</span>
+                        {activeModuleId === module.id && <ChevronRight className="ml-auto w-4 h-4" />}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <div className="space-y-1 animate-in fade-in slide-in-from-left-4 duration-300">
+              {filteredModules.map(module => (
+                <button
+                  key={module.id}
+                  onClick={() => {
+                    setActiveModuleId(module.id);
+                    setIsSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors border outline-none group
+                    ${activeModuleId === module.id 
+                      ? 'bg-indigo-600/20 text-indigo-400 border-indigo-500/20 shadow-inner' 
+                      : 'text-slate-400 border-transparent hover:bg-white/5 hover:text-slate-200'}`}
+                >
+                  <span className={`transition-colors ${activeModuleId === module.id ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
+                    {module.icon}
+                  </span>
+                  <div className="flex-1 text-left">
+                    <div className="truncate">{module.title}</div>
+                    <div className={`text-[10px] ${activeModuleId === module.id ? 'text-indigo-400/60' : 'text-slate-600'}`}>{module.category}</div>
+                  </div>
+                  {activeModuleId === module.id && <ChevronRight className="ml-auto w-4 h-4" />}
+                </button>
+              ))}
+            </div>
+          )}
         </nav>
 
         <div className="p-4 border-t border-white/10 bg-black/20">
           <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>v2.0 Beta</span>
+            <span>v2.1 Custom</span>
             <div className="flex gap-3">
               <Github className="w-4 h-4 cursor-pointer hover:text-white transition-colors" />
               <Info className="w-4 h-4 cursor-pointer hover:text-white transition-colors" />

@@ -26,7 +26,17 @@ import {
   Grid3X3,
   GitBranch,
   RefreshCw,
-  Rocket
+  Rocket,
+  Database,
+  HelpCircle,
+  Search,
+  Split,
+  Copy,
+  Server,
+  Cloud,
+  Scissors,
+  FastForward,
+  Microchip
 } from 'lucide-react';
 import { Module, ModuleCategory } from './types';
 import ParameterSim from './components/ParameterSim';
@@ -38,6 +48,7 @@ import EmbeddingSim from './components/EmbeddingSim';
 import TokenizationLab from './components/TokenizationLab';
 import PrecisionLab from './components/PrecisionLab';
 import ServiceWorkflowSim from './components/ServiceWorkflowSim';
+import ComparisonSim from './components/ComparisonSim';
 import RAGWorkflowSim from './components/RAGWorkflowSim';
 import AgentWorkflowSim from './components/AgentWorkflowSim';
 import OpenAPISim from './components/OpenAPISim';
@@ -51,182 +62,280 @@ import AttentionComplexitySim from './components/AttentionComplexitySim';
 import RadixAttentionSim from './components/RadixAttentionSim';
 import TrainingInferenceSim from './components/TrainingInferenceSim';
 import EagleSpeculativeSim from './components/EagleSpeculativeSim';
+import KVCacheSim from './components/KVCacheSim';
+import QCacheAbsenceSim from './components/QCacheAbsenceSim';
+import QKVConceptSim from './components/QKVConceptSim';
+import RetrievalSpeculativeSim from './components/RetrievalSpeculativeSim';
+import GPUDirectSim from './components/GPUDirectSim';
+import LMCacheSim from './components/LMCacheSim';
+import ChunkSchedulingSim from './components/ChunkSchedulingSim';
+import PrefillDecodeSim from './components/PrefillDecodeSim';
+import CacheRoutingSim from './components/CacheRoutingSim';
+import MoEKernelSim from './components/MoEKernelSim';
 
 export const APP_MODULES: Module[] = [
   {
-    id: 'fundamentals',
-    title: '模型基础：参数与单位',
+    id: 'params',
+    title: '参数与显存',
+    description: '理解大语言模型的参数量与其对硬件资源的要求。',
     category: ModuleCategory.FUNDAMENTALS,
-    icon: <Cpu className="w-5 h-5" />,
-    description: '什么是参数(Parameters)？“B”代表什么？探索大模型体积的秘密。',
+    icon: <Database className="w-4 h-4" />,
     content: <ParameterSim />
   },
   {
-    id: 'train-vs-inference',
-    title: '训练 vs 推理',
+    id: 'tokenization',
+    title: '分词实验室',
+    description: '探索模型如何将文本拆分为 Token。',
     category: ModuleCategory.FUNDAMENTALS,
-    icon: <RefreshCw className="w-5 h-5" />,
-    description: '为什么对话不会改变模型？互动演示参数更新与冻结的区别。',
-    content: <TrainingInferenceSim />
-  },
-  {
-    id: 'transformer-arch',
-    title: 'Transformer 架构解析',
-    category: ModuleCategory.FUNDAMENTALS,
-    icon: <Network className="w-5 h-5" />,
-    description: '从 RNN 到 Attention：为什么 Transformer 是大模型的基石？+ 前沿架构画廊。',
-    content: <TransformerSim />
-  },
-  {
-    id: 'attention-complexity',
-    title: 'Attention 复杂度 (O(N²))',
-    category: ModuleCategory.FUNDAMENTALS,
-    icon: <Grid3X3 className="w-5 h-5" />,
-    description: '为什么长文本会爆炸？交互式演示 Scaled Dot-Product Attention 的平方级增长。',
-    content: <AttentionComplexitySim />
-  },
-  {
-    id: 'learning-paradigms',
-    title: 'AI 学习范式游乐场',
-    category: ModuleCategory.FUNDAMENTALS,
-    icon: <GraduationCap className="w-5 h-5" />,
-    description: '从监督学习到 RLVR：亲手互动演示 AI 是如何通过奖励变聪明的。',
-    content: <LearningParadigmsSim />
-  },
-  {
-    id: 'framework-lab',
-    title: '推理框架实验室',
-    category: ModuleCategory.PERFORMANCE,
-    icon: <TerminalSquare className="w-5 h-5" />,
-    description: '对比 vLLM, SGLang, Ollama 和 xinference：启动配置与调参艺术。',
-    content: <FrameworkSim />
-  },
-  {
-    id: 'radix-attention',
-    title: 'RadixAttention (SGLang)',
-    category: ModuleCategory.PERFORMANCE,
-    icon: <GitBranch className="w-5 h-5" />,
-    description: '像文件系统一样管理 KV Cache。揭秘 SGLang 如何通过前缀树实现极速复用。',
-    content: <RadixAttentionSim />
-  },
-  {
-    id: 'eagle-speculative',
-    title: 'EAGLE-3 投机解码',
-    category: ModuleCategory.PERFORMANCE,
-    icon: <Rocket className="w-5 h-5" />,
-    description: '算一次，出五个词。揭秘 EAGLE 如何利用多层特征外推实现无损 4x 加速。',
-    content: <EagleSpeculativeSim />
-  },
-  {
-    id: 'training-lab',
-    title: '训练与微调实验室',
-    category: ModuleCategory.ARCHITECTURE,
-    icon: <Microscope className="w-5 h-5" />,
-    description: '从预训练到 LoRA：模拟呼吸科专家大模型是如何“炼成”的。',
-    content: <TrainingSim />
-  },
-  {
-    id: 'agent-orchestration',
-    title: 'Agent 智能体与编排',
-    category: ModuleCategory.ARCHITECTURE,
-    icon: <Bot className="w-5 h-5" />,
-    description: '超越线性工作流：探索动态决策、多 Agent 协作与自主反思机制。',
-    content: <AgentWorkflowSim />
-  },
-  {
-    id: 'rag-workflow',
-    title: 'RAG 技术全景',
-    category: ModuleCategory.ARCHITECTURE,
-    icon: <BookOpen className="w-5 h-5" />,
-    description: '从数据清洗到向量库检索：深入理解检索增强生成的完整闭环。',
-    content: <RAGWorkflowSim />
-  },
-  {
-    id: 'tokenization-lab',
-    title: 'Tokenization 实验室',
-    category: ModuleCategory.FUNDAMENTALS,
-    icon: <FlaskConical className="w-5 h-5" />,
-    description: '模拟 DeepSeek 分词逻辑，探索文本是如何变成 Token ID 的。',
+    icon: <Hash className="w-4 h-4" />,
     content: <TokenizationLab />
   },
   {
-    id: 'precision-lab',
-    title: '数值精度实验室 (DType)',
+    id: 'embeddings',
+    title: '词向量空间',
+    description: '可视化文本如何转化为高维空间中的数值向量。',
     category: ModuleCategory.FUNDAMENTALS,
-    icon: <Scale className="w-5 h-5" />,
-    description: '深入理解 FP32, BF16, INT8, INT4。为什么大模型需要“降级”运行？',
-    content: <PrecisionLab />
-  },
-  {
-    id: 'tokenization-embeddings',
-    title: '词向量 (Embeddings)',
-    category: ModuleCategory.FUNDAMENTALS,
-    icon: <Binary className="w-5 h-5" />,
-    description: '从文本到向量：大模型是如何“读懂”人类文字的？',
+    icon: <Layers className="w-4 h-4" />,
     content: <EmbeddingSim />
   },
   {
-    id: 'service-workflow',
-    title: 'AI 业务全景与算力仿真',
-    category: ModuleCategory.PERFORMANCE,
-    icon: <Network className="w-5 h-5" />,
-    description: '对比 RAG、Agent、微调等不同业务模式下的算力消耗与流程差异。',
-    content: <ServiceWorkflowSim />
+    id: 'prefill-decode',
+    title: 'Prefill 与 Decode',
+    description: '揭秘推理过程的两个阶段：为什么首字慢，后续快？',
+    category: ModuleCategory.FUNDAMENTALS,
+    icon: <FastForward className="w-4 h-4" />,
+    content: <PrefillDecodeSim />
   },
   {
-    id: 'inference-metrics',
-    title: '推理性能指标 (TTFT/TPS)',
+    id: 'transformer',
+    title: 'Transformer 架构',
+    description: '深入理解注意力机制与并行计算的威力。',
+    category: ModuleCategory.ARCHITECTURE,
+    icon: <Network className="w-4 h-4" />,
+    content: <TransformerSim />
+  },
+  {
+    id: 'qkv-deepdive',
+    title: 'Q / K / V 详解',
+    description: '揭秘 Query, Key, Value 的设计灵感与解耦魅力。',
+    category: ModuleCategory.ARCHITECTURE,
+    icon: <Split className="w-4 h-4" />,
+    content: <QKVConceptSim />
+  },
+  {
+    id: 'attn-complexity',
+    title: '注意力复杂度',
+    description: '可视化 O(N²) 复杂度对长文本处理的挑战。',
+    category: ModuleCategory.ARCHITECTURE,
+    icon: <Grid3X3 className="w-4 h-4" />,
+    content: <AttentionComplexitySim />
+  },
+  {
+    id: 'training-inference',
+    title: '训练与推理',
+    description: '对比模型学习阶段与应用阶段的差异。',
+    category: ModuleCategory.FUNDAMENTALS,
+    icon: <GraduationCap className="w-4 h-4" />,
+    content: <TrainingInferenceSim />
+  },
+  {
+    id: 'moe-kernel',
+    title: 'MoE 算子优化',
+    description: '深入 GPU 内部，揭秘 Triton 如何加速专家模型推理。',
     category: ModuleCategory.PERFORMANCE,
-    icon: <Activity className="w-5 h-5" />,
-    description: '深入理解 TTFT、TPOT、TPS 和 E2E 延迟。',
+    icon: <Microchip className="w-4 h-4" />,
+    content: <MoEKernelSim />
+  },
+  {
+    id: 'metrics',
+    title: '性能指标',
+    description: '实测 TTFT、TPS 等关键大模型性能参数。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Activity className="w-4 h-4" />,
     content: <MetricsSim />
   },
   {
-    id: 'precision-quantization',
-    title: '量化技术原理 (Quantization)',
-    category: ModuleCategory.FUNDAMENTALS,
-    icon: <Layers className="w-5 h-5" />,
-    description: '精度(FP16, INT8)对模型效果和运行速度有什么影响？量化是如何减肥的？',
+    id: 'quantization',
+    title: '模型量化',
+    description: '了解如何通过牺牲微小精度换取巨大的速度提升。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Zap className="w-4 h-4" />,
     content: <QuantizationSim />
   },
   {
-    id: 'context-window',
-    title: '上下文窗口 (Context Window)',
+    id: 'precision',
+    title: '参数精度',
+    description: '对比 FP16, BF16, INT8 等不同的数值表示方法。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Scale className="w-4 h-4" />,
+    content: <PrecisionLab />
+  },
+  {
+    id: 'kv-cache',
+    title: 'KV Cache 机制',
+    description: '深度理解推理加速的核心——空间换时间。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <RefreshCw className="w-4 h-4" />,
+    content: <KVCacheSim />
+  },
+  {
+    id: 'chunk-scheduling',
+    title: '分块调度优化',
+    description: 'Chunked Prefill：如何在处理长文本时兼顾低延迟。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Scissors className="w-4 h-4" />,
+    content: <ChunkSchedulingSim />
+  },
+  {
+    id: 'cache-routing',
+    title: '语义感知路由',
+    description: '拒绝缓存颠簸：如何通过场景识别提升 Cache 命中率。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Split className="w-4 h-4" />,
+    content: <CacheRoutingSim />
+  },
+  {
+    id: 'lmcache',
+    title: 'LMCache 共享',
+    description: 'LLM 的"Redis"：如何实现 KV Cache 的跨节点共享。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Cloud className="w-4 h-4" />,
+    content: <LMCacheSim />
+  },
+  {
+    id: 'gpudirect',
+    title: 'GPUDirect P2P',
+    description: '多卡通信原理：为什么 PIX 优于 SYS？',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Server className="w-4 h-4" />,
+    content: <GPUDirectSim />
+  },
+  {
+    id: 'q-cache',
+    title: 'Q 缓存之谜',
+    description: '为什么我们只存 KV 却不存 Q？揭开数学背后的真相。',
     category: ModuleCategory.ARCHITECTURE,
-    icon: <Maximize className="w-5 h-5" />,
-    description: '什么是 Token？上下文窗口长度如何决定模型的记忆能力？',
+    icon: <HelpCircle className="w-4 h-4" />,
+    content: <QCacheAbsenceSim />
+  },
+  {
+    id: 'radix-attention',
+    title: 'RadixAttention',
+    description: 'SGLang 中的前缀缓存优化技术。',
+    category: ModuleCategory.ARCHITECTURE,
+    icon: <GitBranch className="w-4 h-4" />,
+    content: <RadixAttentionSim />
+  },
+  {
+    id: 'eagle',
+    title: '投机采样 EAGLE',
+    description: '探索 EAGLE-3 如何实现 5x 以上的推理加速。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Zap className="w-4 h-4" />,
+    content: <EagleSpeculativeSim />
+  },
+  {
+    id: 'retrieval-spec',
+    title: '检索投机推理',
+    description: 'Prompt Lookup: 不用模型也能猜对下一个词？',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Copy className="w-4 h-4" />,
+    content: <RetrievalSpeculativeSim />
+  },
+  {
+    id: 'context-window',
+    title: '上下文窗口',
+    description: '模拟模型记忆极限与 Token 消耗情况。',
+    category: ModuleCategory.FUNDAMENTALS,
+    icon: <Maximize className="w-4 h-4" />,
     content: <ContextWindowSim />
   },
   {
-    id: 'china-models',
-    title: '中国大模型全景图',
+    id: 'rag',
+    title: 'RAG 架构',
+    description: '检索增强生成：让 AI 访问私有知识库。',
+    category: ModuleCategory.ARCHITECTURE,
+    icon: <Search className="w-4 h-4" />,
+    content: <RAGWorkflowSim />
+  },
+  {
+    id: 'mcp',
+    title: 'MCP 协议',
+    description: '模型上下文协议：连接 AI 与外部工具的标准。',
     category: ModuleCategory.ECOSYSTEM,
-    icon: <Globe className="w-5 h-5" />,
-    description: 'DeepSeek, Qwen, GLM, Kimi, Minimax... 盘点中国主流大模型竞争力。',
+    icon: <LinkIcon className="w-4 h-4" />,
+    content: <MCPSim />
+  },
+  {
+    id: 'agents',
+    title: '智能体协作',
+    description: '多 Agent 编排：解决复杂任务的新范式。',
+    category: ModuleCategory.ARCHITECTURE,
+    icon: <Bot className="w-4 h-4" />,
+    content: <AgentWorkflowSim />
+  },
+  {
+    id: 'openapi',
+    title: 'OpenAPI 接口',
+    description: '学习标准的大模型 API 调用协议。',
+    category: ModuleCategory.ECOSYSTEM,
+    icon: <Globe className="w-4 h-4" />,
+    content: <OpenAPISim />
+  },
+  {
+    id: 'training',
+    title: '模型微调',
+    description: '从预训练到 LoRA：模型的进化之路。',
+    category: ModuleCategory.FUNDAMENTALS,
+    icon: <FlaskConical className="w-4 h-4" />,
+    content: <TrainingSim />
+  },
+  {
+    id: 'paradigms',
+    title: '学习范式',
+    description: '对比监督学习、RLHF 与可验证奖励学习。',
+    category: ModuleCategory.FUNDAMENTALS,
+    icon: <Microscope className="w-4 h-4" />,
+    content: <LearningParadigmsSim />
+  },
+  {
+    id: 'frameworks',
+    title: '推理引擎',
+    description: '对比 vLLM, SGLang, Ollama 等主流框架。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Rocket className="w-4 h-4" />,
+    content: <FrameworkSim />
+  },
+  {
+    id: 'cn-landscape',
+    title: '国产模型版图',
+    description: '了解 DeepSeek, Qwen, Kimi 等国产大模型现状。',
+    category: ModuleCategory.ECOSYSTEM,
+    icon: <Globe className="w-4 h-4" />,
     content: <ChinaModelLandscape />
   },
   {
     id: 'small-models',
-    title: '端侧小模型风云榜',
+    title: '高效小模型',
+    description: '在端侧设备上流畅运行的 AI 模型。',
     category: ModuleCategory.ECOSYSTEM,
-    icon: <Smartphone className="w-5 h-5" />,
-    description: 'Phi-3, Gemma, Qwen-Mobile... 适合在手机/笔记本上运行的高效模型。',
+    icon: <Smartphone className="w-4 h-4" />,
     content: <SmallModelLandscape />
   },
   {
-    id: 'prompt-engineering',
-    title: '提示词工程与 OpenAPI',
-    category: ModuleCategory.ECOSYSTEM,
-    icon: <MessageSquare className="w-5 h-5" />,
-    description: 'OpenAPI 协议标准以及如何通过 Prompt 激发模型潜力。',
-    content: <OpenAPISim />
+    id: 'service-workflow',
+    title: '业务全链路',
+    description: '从资源预估到硬件部署的决策仿真。',
+    category: ModuleCategory.PERFORMANCE,
+    icon: <Workflow className="w-4 h-4" />,
+    content: <ServiceWorkflowSim />
   },
   {
-    id: 'mcp-protocol',
-    title: 'MCP 协议 (Model Context Protocol)',
-    category: ModuleCategory.ECOSYSTEM,
-    icon: <Workflow className="w-5 h-5" />,
-    description: '让 AI 访问你的工具 and 数据。MCP 如何重新定义 AI 交互？',
-    content: <MCPSim />
+    id: 'comparison',
+    title: '新老技术对比',
+    description: '传统深度学习与大模型时代的差异。',
+    category: ModuleCategory.FUNDAMENTALS,
+    icon: <Scale className="w-4 h-4" />,
+    content: <ComparisonSim />
   }
 ];

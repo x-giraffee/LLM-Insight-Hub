@@ -199,79 +199,81 @@ const EagleSpeculativeSim: React.FC = () => {
         
         {/* Left: Architecture Diagram */}
         <div className="lg:col-span-5 space-y-6">
-           <div className="p-6 bg-slate-900 border border-white/10 rounded-3xl relative overflow-hidden h-[400px] flex flex-col items-center justify-center">
+           <div className="p-6 bg-slate-900 border border-white/10 rounded-3xl relative overflow-hidden h-[400px] flex flex-col">
               <div className="absolute top-4 left-4 text-[10px] font-bold text-slate-500 uppercase flex items-center gap-2">
                 <Network className="w-4 h-4" /> 架构透视 (Architecture View)
               </div>
 
-              {/* LLM Stack */}
-              <div className="relative w-48 flex flex-col gap-1 mb-8">
-                 <div className="text-center text-[9px] text-slate-500 mb-1">Base LLM (e.g. Llama-3-70B)</div>
-                 {/* Deep Layers */}
-                 <div className={`h-12 bg-slate-800 rounded border border-white/5 flex items-center justify-center text-[10px] text-slate-400 transition-all ${mode === 'eagle3' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''}`}>
-                    Deep Layer (32)
-                 </div>
-                 {/* Connection Lines for EAGLE-3 */}
-                 {mode === 'eagle3' && <div className="absolute -right-4 top-6 w-8 h-px bg-emerald-500/50" />}
-                 
-                 {/* Mid Layers */}
-                 <div className={`h-12 bg-slate-800 rounded border border-white/5 flex items-center justify-center text-[10px] text-slate-400 transition-all ${mode === 'eagle3' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''}`}>
-                    Mid Layer (16)
-                 </div>
-                 {mode === 'eagle3' && <div className="absolute -right-4 top-[4.5rem] w-8 h-px bg-emerald-500/50" />}
+              <div className="flex-1 flex flex-row items-center justify-center gap-16 relative">
+                  {/* LLM Stack */}
+                  <div className="relative w-48 flex flex-col gap-1">
+                     <div className="text-center text-[9px] text-slate-500 mb-1">Base LLM (e.g. Llama-3-70B)</div>
+                     {/* Deep Layers */}
+                     <div className={`h-12 bg-slate-800 rounded border border-white/5 flex items-center justify-center text-[10px] text-slate-400 transition-all ${mode === 'eagle3' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''}`}>
+                        Deep Layer (32)
+                     </div>
+                     {/* Connection Lines for EAGLE-3 */}
+                     {mode === 'eagle3' && <div className="absolute -right-4 top-6 w-8 h-px bg-emerald-500/50" />}
+                     
+                     {/* Mid Layers */}
+                     <div className={`h-12 bg-slate-800 rounded border border-white/5 flex items-center justify-center text-[10px] text-slate-400 transition-all ${mode === 'eagle3' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''}`}>
+                        Mid Layer (16)
+                     </div>
+                     {mode === 'eagle3' && <div className="absolute -right-4 top-[4.5rem] w-8 h-px bg-emerald-500/50" />}
 
-                 {/* Shallow Layers */}
-                 <div className={`h-12 bg-slate-800 rounded border border-white/5 flex items-center justify-center text-[10px] text-slate-400 transition-all ${mode === 'eagle3' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''}`}>
-                    Shallow Layer (4)
-                 </div>
-                 {mode === 'eagle3' && <div className="absolute -right-4 top-[7.5rem] w-8 h-px bg-emerald-500/50" />}
-                 
-                 {/* Embedding */}
-                 <div className="h-8 bg-slate-900 rounded border border-dashed border-slate-700 flex items-center justify-center text-[9px] text-slate-600">
-                    Input Embeddings
-                 </div>
+                     {/* Shallow Layers */}
+                     <div className={`h-12 bg-slate-800 rounded border border-white/5 flex items-center justify-center text-[10px] text-slate-400 transition-all ${mode === 'eagle3' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''}`}>
+                        Shallow Layer (4)
+                     </div>
+                     {mode === 'eagle3' && <div className="absolute -right-4 top-[7.5rem] w-8 h-px bg-emerald-500/50" />}
+                     
+                     {/* Embedding */}
+                     <div className="h-8 bg-slate-900 rounded border border-dashed border-slate-700 flex items-center justify-center text-[9px] text-slate-600">
+                        Input Embeddings
+                     </div>
+                  </div>
+
+                  {/* The EAGLE Head */}
+                  {mode !== 'standard' && (
+                    <div className="relative flex flex-col items-center animate-in slide-in-from-left-4 fade-in duration-700">
+                       <div className="h-32 w-1 bg-gradient-to-b from-transparent via-slate-600 to-transparent absolute -left-8" />
+                       
+                       {mode === 'eagle1' && (
+                         <>
+                            <div className="w-32 p-3 bg-blue-900/30 border border-blue-500/50 rounded-xl text-center backdrop-blur-md">
+                               <div className="text-[10px] font-bold text-blue-300">EAGLE Head (v1)</div>
+                               <div className="text-[9px] text-blue-400/60 mt-1">Input: Top Layer Only</div>
+                               <div className="mt-2 text-[8px] bg-black/40 rounded p-1 text-slate-300">Pred: Feature Vector</div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-blue-500 rotate-90 mt-2" />
+                         </>
+                       )}
+
+                       {mode === 'eagle3' && (
+                         <>
+                            <div className="absolute -left-12 h-40 w-8 border-r border-emerald-500/30 rounded-r-3xl" />
+                            <div className="w-36 p-3 bg-emerald-900/30 border border-emerald-500/50 rounded-xl text-center backdrop-blur-md z-10 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                               <div className="text-[10px] font-bold text-emerald-300 flex items-center justify-center gap-1">
+                                 <Combine className="w-3 h-3" /> EAGLE-3 Head
+                               </div>
+                               <div className="text-[9px] text-emerald-400/60 mt-1">Input: Multi-Layer Fusion</div>
+                               <div className="mt-2 text-[8px] bg-black/40 rounded p-1 text-slate-300">Pred: Token ID (Softmax)</div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-emerald-500 rotate-90 mt-2" />
+                         </>
+                       )}
+                       
+                       <div className="mt-2 p-2 bg-slate-800 rounded-lg border border-white/5 text-center w-24">
+                          <div className="text-[8px] text-slate-500 uppercase">Draft Output</div>
+                          <div className="flex justify-center gap-1 mt-1">
+                             <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                             <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse delay-75" />
+                             <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse delay-150" />
+                          </div>
+                       </div>
+                    </div>
+                  )}
               </div>
-
-              {/* The EAGLE Head */}
-              {mode !== 'standard' && (
-                <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-center animate-in slide-in-from-left-4 fade-in duration-700">
-                   <div className="h-32 w-1 bg-gradient-to-b from-transparent via-slate-600 to-transparent absolute -left-8" />
-                   
-                   {mode === 'eagle1' && (
-                     <>
-                        <div className="w-32 p-3 bg-blue-900/30 border border-blue-500/50 rounded-xl text-center backdrop-blur-md">
-                           <div className="text-[10px] font-bold text-blue-300">EAGLE Head (v1)</div>
-                           <div className="text-[9px] text-blue-400/60 mt-1">Input: Top Layer Only</div>
-                           <div className="mt-2 text-[8px] bg-black/40 rounded p-1 text-slate-300">Pred: Feature Vector</div>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-blue-500 rotate-90 mt-2" />
-                     </>
-                   )}
-
-                   {mode === 'eagle3' && (
-                     <>
-                        <div className="absolute -left-12 h-40 w-8 border-r border-emerald-500/30 rounded-r-3xl" />
-                        <div className="w-36 p-3 bg-emerald-900/30 border border-emerald-500/50 rounded-xl text-center backdrop-blur-md z-10 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                           <div className="text-[10px] font-bold text-emerald-300 flex items-center justify-center gap-1">
-                             <Combine className="w-3 h-3" /> EAGLE-3 Head
-                           </div>
-                           <div className="text-[9px] text-emerald-400/60 mt-1">Input: Multi-Layer Fusion</div>
-                           <div className="mt-2 text-[8px] bg-black/40 rounded p-1 text-slate-300">Pred: Token ID (Softmax)</div>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-emerald-500 rotate-90 mt-2" />
-                     </>
-                   )}
-                   
-                   <div className="mt-2 p-2 bg-slate-800 rounded-lg border border-white/5 text-center w-24">
-                      <div className="text-[8px] text-slate-500 uppercase">Draft Output</div>
-                      <div className="flex justify-center gap-1 mt-1">
-                         <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                         <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse delay-75" />
-                         <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse delay-150" />
-                      </div>
-                   </div>
-                </div>
-              )}
            </div>
            
            <div className="p-4 bg-white/5 rounded-2xl border border-white/5">

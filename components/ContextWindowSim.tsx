@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Maximize2, AlertTriangle, Layers, Info } from 'lucide-react';
 
@@ -8,7 +7,7 @@ const ContextWindowSim: React.FC = () => {
   
   // A more realistic pseudo-tokenizer for visualization and counting
   // This handles CJK characters and Latin words separately
-  const tokenSegments = useMemo(() => {
+  const tokenSegments = useMemo<string[]>(() => {
     if (!inputText) return [];
     
     // Regex explanation:

@@ -41,7 +41,7 @@ const EmbeddingSim: React.FC = () => {
   const tokens: TokenData[] = useMemo(() => {
     if (!text) return [];
     const regex = /[\u4e00-\u9fa5]+|[a-zA-Z0-9]+|\s+|[^\w\s\u4e00-\u9fa5]/g;
-    const matches = text.match(regex) || [];
+    const matches: string[] = text.match(regex) || [];
     
     return matches
       .filter(t => t.trim().length > 0)

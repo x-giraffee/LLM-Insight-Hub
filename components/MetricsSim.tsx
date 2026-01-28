@@ -7,6 +7,8 @@ const MetricsSim: React.FC = () => {
   const [isSimulating, setIsSimulating] = useState(false);
   const [ttft, setTtft] = useState(0);
   const [tps, setTps] = useState(0);
+  const [tpot, setTpot] = useState(0);
+  const [e2e, setE2E] = useState(0);
   const [tokens, setTokens] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
 
@@ -17,6 +19,8 @@ const MetricsSim: React.FC = () => {
     setTokens([]);
     setTtft(0);
     setTps(0);
+    setTpot(0);
+    setE2E(0);
     setProgress(0);
 
     const startTime = Date.now();
@@ -38,8 +42,14 @@ const MetricsSim: React.FC = () => {
         } else {
           clearInterval(interval);
           const endTime = Date.now();
-          const totalDuration = (endTime - firstTokenTime) / 1000;
-          setTps(sampleText.length / totalDuration);
+          const decodingDuration = endTime - firstTokenTime; // ms
+          const totalDuration = endTime - startTime; // ms
+          const tokenCount = sampleText.length;
+
+          setE2E(totalDuration);
+          setTps(tokenCount / (decodingDuration / 1000));
+          setTpot(decodingDuration / tokenCount);
+          
           setIsSimulating(false);
         }
       }, 100);
@@ -70,14 +80,14 @@ const MetricsSim: React.FC = () => {
               开始推理
             </button>
             <button 
-              onClick={() => { setTokens([]); setTtft(0); setTps(0); setProgress(0); }}
+              onClick={() => { setTokens([]); setTtft(0); setTps(0); setTpot(0); setE2E(0); setProgress(0); }}
               className="p-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-all"
             >
               <RotateCcw className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
             <div className="p-4 bg-slate-900/50 rounded-xl border border-amber-500/20">
               <span className="text-[10px] text-amber-500 font-bold uppercase tracking-wider">TTFT (首字时间)</span>
               <div className="text-2xl font-mono font-bold text-slate-100">{ttft > 0 ? `${ttft.toFixed(0)}ms` : '--'}</div>
@@ -85,6 +95,14 @@ const MetricsSim: React.FC = () => {
             <div className="p-4 bg-slate-900/50 rounded-xl border border-emerald-500/20">
               <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">TPS (每秒Token)</span>
               <div className="text-2xl font-mono font-bold text-slate-100">{tps > 0 ? `${tps.toFixed(1)}` : '--'}</div>
+            </div>
+            <div className="p-4 bg-slate-900/50 rounded-xl border border-blue-500/20">
+              <span className="text-[10px] text-blue-500 font-bold uppercase tracking-wider">TPOT (每词耗时)</span>
+              <div className="text-2xl font-mono font-bold text-slate-100">{tpot > 0 ? `${tpot.toFixed(0)}ms` : '--'}</div>
+            </div>
+            <div className="p-4 bg-slate-900/50 rounded-xl border border-purple-500/20">
+              <span className="text-[10px] text-purple-500 font-bold uppercase tracking-wider">E2E (总时延)</span>
+              <div className="text-2xl font-mono font-bold text-slate-100">{e2e > 0 ? `${(e2e/1000).toFixed(2)}s` : '--'}</div>
             </div>
           </div>
         </div>

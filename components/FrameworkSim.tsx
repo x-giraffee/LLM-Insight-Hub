@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Terminal, Server, Settings, Cpu, HardDrive, 
@@ -49,7 +50,8 @@ const FRAMEWORKS: Record<FrameworkId, FrameworkData> = {
     keyParams: [
       { name: '--gpu-memory-utilization', value: '0.9', desc: '控制预分配显存比例' },
       { name: '--tensor-parallel-size', value: '2', desc: '多卡并行切分数量' },
-      { name: '--max-num-seqs', value: '256', desc: '单批次最大并发请求数' }
+      { name: '--max-num-seqs', value: '256', desc: '单批次最大并发请求数' },
+      { name: '--max-model-len', value: '4096', desc: '最大上下文长度 (KV Cache容量)' }
     ],
     optimizations: ['PagedAttention (解决显存碎片)', 'Continuous Batching', 'FP8 支持']
   },
@@ -66,10 +68,11 @@ const FRAMEWORKS: Record<FrameworkId, FrameworkData> = {
       vram: '中高',
       platform: 'Linux'
     },
-    launchCmd: 'python -m sglang.launch_server \\\n  --model-path lmms-lab/llama3-llava-next-8b \\\n  --tp 1 \\\n  --mem-fraction-static 0.8',
+    launchCmd: 'python -m sglang.launch_server \\\n  --model-path lmms-lab/llama3-llava-next-8b \\\n  --tp 1 \\\n  --context-length 32768 \\\n  --mem-fraction-static 0.8',
     keyParams: [
       { name: '--mem-fraction-static', value: '0.8', desc: '静态缓存分配比例' },
       { name: '--enable-flashinfer', value: 'True', desc: '开启极速 Attention 算子' },
+      { name: '--context-length', value: '32768', desc: '最大上下文窗口限制' },
       { name: '--tokenizer-mode', value: 'auto', desc: '分词器加载模式' }
     ],
     optimizations: ['RadixAttention (前缀缓存优化)', 'Compressed Structure Decoding', '原生多模态支持']
@@ -91,6 +94,7 @@ const FRAMEWORKS: Record<FrameworkId, FrameworkData> = {
     keyParams: [
       { name: 'num_gpu', value: '1', desc: '指定使用的 GPU 数量' },
       { name: 'num_thread', value: '8', desc: 'CPU 模式下的线程数' },
+      { name: 'num_ctx', value: '4096', desc: '上下文窗口大小' },
       { name: 'repeat_penalty', value: '1.1', desc: '惩罚项，减少重复生成' }
     ],
     optimizations: ['GGUF 量化支持', 'Llama.cpp 后端', '自动跨平台调度']
